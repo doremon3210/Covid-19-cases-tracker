@@ -11,4 +11,4 @@
 * Plotly
 
 # Demo
-Click [Here](demo.html) for the demo of the map
+{% include_relative demo.html %}
