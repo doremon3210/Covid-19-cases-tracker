@@ -11,4 +11,5 @@
 * Plotly
 
 # Demo
-{% include_relative demo.html %}
+[sample](sample.png)
+Download the interactive map [here](demo.html)
