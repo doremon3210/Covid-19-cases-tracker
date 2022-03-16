@@ -124,6 +124,8 @@ df_2days.to_excel("covid_2days.xlsx")
 fig_now = px.choropleth(df_now, locations="CODE", color="Total Cases", hover_name="Country", color_continuous_scale=px.colors.sequential.YlOrRd)
 fig_now.update_layout(title_text='Current COVID-19 Cases', annotations=[dict(x=0.5,y=0,xref='paper',yref='paper',text='Source: <a href="https://www.worldometers.info/coronavirus/">\
             Worldometer</a>',showarrow=False)])
+# Save the demo file            
+# fig_now.write_html("demo.html")
 fig_now.show()
 
 fig_yesterday = px.choropleth(df_yesterday, locations="CODE", color="Total Cases", hover_name="Country", color_continuous_scale=px.colors.sequential.YlOrRd)
