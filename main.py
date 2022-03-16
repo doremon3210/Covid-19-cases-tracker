@@ -9,89 +9,57 @@ import plotly.express as px
 URL = requests.get("https://www.worldometers.info/coronavirus/#main_table")
 df = pd.read_html(URL.text, displayed_only=False)
 
+# Promt user to choose what data time they want
+print("When do you want to know the cases (Enter 0-2):")
+print("0: Now")
+print("1: Yesterday")
+print("2: 2 days ago")
+choice = int(input())
+print()
+
 # Save currently data, yesterday data, and 2 days ago data
-df_now = df[0]
-df_yesterday = df[1]
-df_2days = df[2]
+df = df[choice]
 
 # Select columns
-df_now = df_now.loc[:,['Country,Other', 'TotalCases', 'NewCases', 'TotalDeaths', 'NewDeaths',
-       'TotalRecovered', 'NewRecovered', 'ActiveCases', 'Population']]
-df_yesterday = df_yesterday.loc[:,['Country,Other', 'TotalCases', 'NewCases', 'TotalDeaths', 'NewDeaths',
-       'TotalRecovered', 'NewRecovered', 'ActiveCases', 'Population']]
-df_2days = df_2days.loc[:,['Country,Other', 'TotalCases', 'NewCases', 'TotalDeaths', 'NewDeaths',
+df = df.loc[:,['Country,Other', 'TotalCases', 'NewCases', 'TotalDeaths', 'NewDeaths',
        'TotalRecovered', 'NewRecovered', 'ActiveCases', 'Population']]
 
 # Drop unwanted rows
-df_now = df_now[df_now["Country,Other"].str.contains("Asia|North America|South America|Europe|Oceania|World|Total:")==False]
-df_now = df_now[df_now["Country,Other"] != "Africa"]
-df_yesterday = df_yesterday[df_yesterday["Country,Other"].str.contains("Asia|North America|South America|Europe|Oceania|World|Total:")==False]
-df_yesterday = df_yesterday[df_yesterday["Country,Other"] != "Africa"]
-df_2days = df_2days[df_2days["Country,Other"].str.contains("Asia|North America|South America|Europe|Oceania|World|Total:")==False]
-df_2days = df_2days[df_2days["Country,Other"] != "Africa"]
+df = df[df["Country,Other"].str.contains("Asia|North America|South America|Europe|Oceania|World|Total:")==False]
+df = df[df["Country,Other"] != "Africa"]
 
 # Reset the index number
-df_now.reset_index(drop=True, inplace=True)
-df_yesterday.reset_index(drop=True, inplace=True)
-df_2days.reset_index(drop=True, inplace=True)
+df.reset_index(drop=True, inplace=True)
 
 # Rename columns
 column_names = ['Country', 'Total Cases', 'New Cases', 'Total Deaths', 'New Deaths', 'Total Recovered', 'New Recovered', 'Active Cases', 'Population']
-df_now.columns = column_names
-df_yesterday.columns = column_names
-df_2days.columns = column_names
+df.columns = column_names
+
 
 # Sort the data in descending
-df_now.sort_values(by=['Total Cases'], ascending=False, inplace=True)
-df_yesterday.sort_values(by=['Total Cases'], ascending=False, inplace=True)
-df_2days.sort_values(by=['Total Cases'], ascending=False, inplace=True)
+df.sort_values(by=['Total Cases'], ascending=False, inplace=True)
+
 
 # Remove extra characters in the data
-for col in df_now.columns[1:]:
-    df_now[col].replace(regex=True,inplace=True,to_replace=r'\D',value=r'')
-
-for col in df_yesterday.columns[1:]:
-    df_yesterday[col].replace(regex=True,inplace=True,to_replace=r'\D',value=r'')
-
-for col in df_2days.columns[1:]:
-    df_2days[col].replace(regex=True,inplace=True,to_replace=r'\D',value=r'')
+for col in df.columns[1:]:
+    df[col].replace(regex=True,inplace=True,to_replace=r'\D',value=r'')
 
 # Change country's name so that we can use PyCountry
-df_now.replace('UK', 'United Kingdom', inplace=True)
-df_now.replace('Russia', 'Russian Federation', inplace=True)
-df_now.replace('DRC', 'COD', inplace=True)
-df_now.replace('S. Korea', 'South Korea', inplace=True)
-df_now.replace('St. Vincent Grenadines', 'Saint Vincent and the Grenadines', inplace=True)
-df_now.replace('St. Barth', 'Saint Barthélemy', inplace=True)
-df_now.replace('Iran', 'Iran, Islamic Republic of', inplace=True)
-df_now.replace('CAR', 'CAF', inplace=True)
-df_now.replace('Laos', "Lao People's Democratic Republic", inplace=True)
-df_now.replace('UAE', 'United Arab Emirates', inplace=True)
-df_now.replace('Syria', 'Syrian Arab Republic', inplace=True)
+df.replace('UK', 'United Kingdom', inplace=True)
+df.replace('Russia', 'Russian Federation', inplace=True)
+df.replace('DRC', 'COD', inplace=True)
+df.replace('S. Korea', 'South Korea', inplace=True)
+df.replace('St. Vincent Grenadines', 'Saint Vincent and the Grenadines', inplace=True)
+df.replace('St. Barth', 'Saint Barthélemy', inplace=True)
+df.replace('Iran', 'Iran, Islamic Republic of', inplace=True)
+df.replace('CAR', 'CAF', inplace=True)
+df.replace('Laos', "Lao People's Democratic Republic", inplace=True)
+df.replace('UAE', 'United Arab Emirates', inplace=True)
+df.replace('Syria', 'Syrian Arab Republic', inplace=True)
 
-df_yesterday.replace('UK', 'United Kingdom', inplace=True)
-df_yesterday.replace('Russia', 'Russian Federation', inplace=True)
-df_yesterday.replace('DRC', 'COD', inplace=True)
-df_yesterday.replace('S. Korea', 'South Korea', inplace=True)
-df_yesterday.replace('St. Vincent Grenadines', 'Saint Vincent and the Grenadines', inplace=True)
-df_yesterday.replace('St. Barth', 'Saint Barthélemy', inplace=True)
-df_yesterday.replace('Iran', 'Iran, Islamic Republic of', inplace=True)
-df_yesterday.replace('CAR', 'CAF', inplace=True)
-df_yesterday.replace('Laos', "Lao People's Democratic Republic", inplace=True)
-df_yesterday.replace('UAE', 'United Arab Emirates', inplace=True)
-df_yesterday.replace('Syria', 'Syrian Arab Republic', inplace=True)
-
-df_2days.replace('UK', 'United Kingdom', inplace=True)
-df_2days.replace('Russia', 'Russian Federation', inplace=True)
-df_2days.replace('DRC', 'COD', inplace=True)
-df_2days.replace('S. Korea', 'South Korea', inplace=True)
-df_2days.replace('St. Vincent Grenadines', 'Saint Vincent and the Grenadines', inplace=True)
-df_2days.replace('St. Barth', 'Saint Barthélemy', inplace=True)
-df_2days.replace('Iran', 'Iran, Islamic Republic of', inplace=True)
-df_2days.replace('CAR', 'CAF', inplace=True)
-df_2days.replace('Laos', "Lao People's Democratic Republic", inplace=True)
-df_2days.replace('UAE', 'United Arab Emirates', inplace=True)
-df_2days.replace('Syria', 'Syrian Arab Republic', inplace=True)
+# Convert cells data type to number
+for col in df.columns[1:]:
+    df[col] = pd.to_numeric(df[col])
 
 # This function create a ISO 3166 country code column. If it does not recognize, the country's code will be 'None'
 def alpha3code(column):
@@ -107,36 +75,69 @@ def alpha3code(column):
     return CODE
 
 # Add the country's code column
-df_now['CODE'] = alpha3code(df_now.Country)
-df_yesterday['CODE'] = alpha3code(df_yesterday.Country)
-df_2days['CODE'] = alpha3code(df_2days.Country)
+df['CODE'] = alpha3code(df.Country)
 
 # Save the data to excel file or csv file
-df_now.to_excel("covid_now.xlsx")
-#df_now.to_csv("covid_now.csv")
-df_yesterday.to_excel("covid_yesterday.xlsx")
-#df_yesterday.to_csv("covid_yesterday.csv")
-df_2days.to_excel("covid_2days.xlsx")
-#df_2days.to_csv("covid_2days.csv")
+def storeTheFile(file_choice):
+    # This dictionary helps in saving the file name
+    choice_dict = {0: "now", 1: "yesterday", 2: "2_days_ago"}
+
+    if (file_choice == 1):
+        df.to_excel("covid_cases_{}.xlsx".format(choice_dict[choice]))
+        print("Successfully storing the file.")
+    elif (file_choice == 2):
+        df.to_csv("covid_cases_{}.csv".format(choice_dict[choice]))
+        print("Successfully storing the file.")
 
 
-# Display the total COVID-19 total cases around the world
-fig_now = px.choropleth(df_now, locations="CODE", color="Total Cases", hover_name="Country", color_continuous_scale=px.colors.sequential.YlOrRd)
-fig_now.update_layout(title_text='Current COVID-19 Cases', annotations=[dict(x=0.5,y=0,xref='paper',yref='paper',text='Source: <a href="https://www.worldometers.info/coronavirus/">\
-            Worldometer</a>',showarrow=False)])
-# Save the demo file            
-# fig_now.write_html("demo.html")
-fig_now.show()
+print("Do you want to the store the data? (Enter 0-2)")
+print("0: No, don't save it")
+print("1: Yes, in Excel file")
+print("2: Yes, in CSV file")
 
-fig_yesterday = px.choropleth(df_yesterday, locations="CODE", color="Total Cases", hover_name="Country", color_continuous_scale=px.colors.sequential.YlOrRd)
-fig_yesterday.update_layout(title_text='Yesterday COVID-19 Cases', annotations=[dict(x=0.5,y=0,xref='paper',yref='paper',text='Source: <a href="https://www.worldometers.info/coronavirus/">\
-            Worldometer</a>',showarrow=False)])
-fig_yesterday.show()
-
-fig_2days = px.choropleth(df_2days, locations="CODE", color="Total Cases", hover_name="Country", color_continuous_scale=px.colors.sequential.YlOrRd)
-fig_2days.update_layout(title_text='2 Days Ago COVID-19 Cases', annotations=[dict(x=0.5,y=0,xref='paper',yref='paper',text='Source: <a href="https://www.worldometers.info/coronavirus/">\
-            Worldometer</a>', showarrow=False)])
-fig_2days.show()
+file_choice = int(input())
+storeTheFile(file_choice)
+print()
 
 
+def plotGraph():
+    # Promt the user to enter the data of the plot
+    print("What data do you want to plot? (Enter 0-7)")
+    print("0: Total Cases")
+    print("1: New Cases")
+    print("2: Total Deaths")
+    print("3: New Deaths")
+    print("4: Total Recovered")
+    print("5: New Recovered")
+    print("6: Active Cases")
+    print("7: Population")
+    data_choice = int(input())
+    print("Displaying the plot...")
+    print()
 
+    # These dictionaries help for naming the title of the plot and select the data
+    data_dict = {0: "Total Cases", 1: "New Cases", 2: "Total Deaths", 3: "New Deaths", 4: "Total Recovered", 5: "New Recovered", 6: "Active Cases", 7: "Population"}
+    choice_dict = {0: "Now", 1: "Yesterday", 2: "2 Days Ago"}
+
+    # Use light sequence color for "Total Recovered" and "New Recovered" data
+    if (data_choice == 4 or data_choice == 5):
+        fig = px.choropleth(df, locations="CODE", color=data_dict[data_choice], hover_name="Country", color_continuous_scale=px.colors.sequential.Emrld)
+    # Use hot sequence color for everything else
+    else:
+        fig = px.choropleth(df, locations="CODE", color=data_dict[data_choice], hover_name="Country", color_continuous_scale=px.colors.sequential.YlOrRd)
+    fig.update_layout(title_text='COVID-19 {} {}'.format(data_dict[data_choice], choice_dict[choice]), annotations=[dict(x=0.5,y=0,xref='paper',yref='paper',text='Source: <a href="https://www.worldometers.info/coronavirus/">\
+                #Worldometer</a>', showarrow=False)])
+    # Save the demo file            
+    # fig.write_html("demo.html")
+    fig.show()
+
+print("Do you want to display the plot? (Enter 0-1)")
+print("0: No")
+print("1: Yes")
+plot_choice = int(input())
+print()
+
+if (plot_choice == 1):
+    plotGraph()
+
+print("Exiting the program...")
