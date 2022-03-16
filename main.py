@@ -4,6 +4,7 @@ import requests
 import pandas as pd
 import pycountry 
 import plotly.express as px
+from datetime import date
 
 # Get the data from Worldometer
 URL = requests.get("https://www.worldometers.info/coronavirus/#main_table")
@@ -81,12 +82,14 @@ df['CODE'] = alpha3code(df.Country)
 def storeTheFile(file_choice):
     # This dictionary helps in saving the file name
     choice_dict = {0: "now", 1: "yesterday", 2: "2_days_ago"}
-
+    # This line helps in saving the file name
+    today = date.today().strftime("%Y_%m_%d")
+    
     if (file_choice == 1):
-        df.to_excel("covid_cases_{}.xlsx".format(choice_dict[choice]))
+        df.to_excel("covid_cases_{}_{}.xlsx".format(choice_dict[choice], today))
         print("Successfully storing the file.")
     elif (file_choice == 2):
-        df.to_csv("covid_cases_{}.csv".format(choice_dict[choice]))
+        df.to_csv("covid_cases_{}_{}.csv".format(choice_dict[choice], today))
         print("Successfully storing the file.")
 
 
