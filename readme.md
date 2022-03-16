@@ -11,5 +11,5 @@
 * Plotly
 
 # Demo
-[sample](sample.png)
+[sample](/sample.png)
 Download the interactive map [here](demo.html)
