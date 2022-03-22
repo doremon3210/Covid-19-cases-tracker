@@ -3,13 +3,13 @@
 * It can save the data as an Excel file or CSV file for further study.
 * It can also display the data using Plotly.
 
-# Requirements
+## Requirements
 * Python 3
 * Requests
 * Pandas
 * PyCountry
 * Plotly
 
-# Demo
+## Demo
 ![sample](/sample.png)
 Download the interactive map [here](demo.html)
